@@ -1,6 +1,6 @@
 Package: bouquet
 Title: Filter and Augment Biological GC-MS Data
-Version: 0.0.0.9000
+Version: 0.0.0.1
 Authors@R: c(person("John", "Powers", email = "john.powers@uci.edu", role = c("aut", "cre")), person("Katherine", "Eisen", email = "kee39@cornell.edu ", role = c("aut")),person("Diane", "Campbell", email = "drcampbe@uci.edu  ", role = c("aut")),person("Robert", "Raguso", email = "rar229@cornell.edu ", role = c("aut")))
 Description: Filters and augments biological GC-MS datasets
 Depends: R (>= 3.5.2)
