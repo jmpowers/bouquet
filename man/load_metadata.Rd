@@ -4,7 +4,8 @@
 \alias{load_metadata}
 \title{Load metadata}
 \usage{
-load_metadata(metadata, date, sample, group, type, amount)
+load_metadata(metadata, date = NULL, sample, group = NULL, type,
+  amount = NULL)
 }
 \arguments{
 \item{metadata}{data frame of sample metadata}
@@ -26,6 +27,6 @@ metadata, a data frame with the standard column names and types
 Loads metadata about the samples
 }
 \examples{
-metadata <- read.table("metadata.csv", header = TRUE, sep = "\\t") \%>\%
-load_metadata("SampleDate", "Sample", c("Species", "Population", "Drought"), "Type", "Biomass")
+data(GCMSfloral)
+metadata <- load_metadata(GCMS_metadata, "SampleDate", "Filename", c("Cross", "Time"), "Type", "Flrs")
 }

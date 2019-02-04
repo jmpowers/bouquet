@@ -12,22 +12,26 @@ make_chemtable(longdata, metadata)
 \item{metadata}{the sample metadata}
 }
 \value{
-chemtable, a data frame of the compounds, with the following columns:
-compound: compound name
-RT: mean RT
-RT.var: variance of RT
-match: mean match
-match.var: variance of match
-max: maximum area
-mean: mean area
-count: number of occurrences across all samples
-TODO count.X: multiple columns, number of occurrences within types and treatment groups
-freq: proportion of occurrences across all samples
-TODO freq.X: multiple columns, proportion of occurrences within types and treatment groups
+chemtable, a data frame of the compound
 }
 \description{
-Make chemical table
+Summarize information about each chemical, including retention time and frequency of occurence by groups. Prerequisite for the filter* functions.
+}
+\details{
+Generates chemtable, a data frame of the compounds, with the following columns:
+\describe{
+\item{compound}{compound name}
+\item{RT}{mean RT}
+\item{RT.var}{variance of RT}
+\item{match}{mean match}
+\item{match.var}{variance of match}
+\item{max.area}{maximum area in floral samples}
+\item{mean.area}{mean area in floral samples, including zeros}
+\item{count.X}{multiple columns, number of occurrences within types and treatment groups}
+\item{freq.X}{multiple columns, proportion of occurrences within types and treatment groups}
+}
 }
 \examples{
-chemtable <- make_chemtable(longdata, metadata)
+data(GCMSfloral)
+\dontrun{chemtable <- make_chemtable(longdata, metadata)}
 }

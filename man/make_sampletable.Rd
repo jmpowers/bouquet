@@ -16,5 +16,6 @@ sampletable, a wide data frame with samples in rows and compound names in column
 Converts long-format GC-MS data to a wide data frame with samples in rows and compound names in columns, containing peak areas
 }
 \examples{
+data(GCMSfloral)
 sampletable <- make_sampletable(longdata)
 }

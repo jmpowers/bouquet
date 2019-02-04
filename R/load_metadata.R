@@ -9,11 +9,15 @@
 #' @param amount the string that specifies the amount used for standardization (e.g. flower number or mass)
 #' @return metadata, a data frame with the standard column names and types
 #' @examples
-#' metadata <- read.table("metadata.csv", header = TRUE, sep = "\t") %>%
-#' load_metadata("SampleDate", "Sample", c("Species", "Population", "Drought"), "Type", "Biomass")
+#' data(GCMSfloral)
+#' metadata <- load_metadata(GCMS_metadata, "SampleDate", "Filename", c("Cross", "Time"), "Type", "Flrs")
 #' @export
+load_metadata <- function(metadata, date=NULL, sample, group=NULL, type, amount=NULL) {
+  cols <- as.list(environment())[c("date", "sample", "type", "amount")]
+  cols <- cols[sapply(cols, is.character)]
+  found <- match(colnames(metadata), cols)
+  colnames(metadata) <- ifelse(is.na(found), colnames(metadata), names(cols)[found])
 
-load_metadata <- function(metadata, date, sample, group, type, amount) {
-  colnames(metadata)[match(colnames(metadata), c(date, sample, group, type, amount))] <- c("date", "sample", "group", "type", "amount")
+  attr(metadata,"group") <- as.vector(group)
   return(metadata)
 }

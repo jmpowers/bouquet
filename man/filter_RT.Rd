@@ -2,20 +2,23 @@
 % Please edit documentation in R/filter_RT.R
 \name{filter_RT}
 \alias{filter_RT}
-\title{A function to filter on retention times}
+\title{Filter on retention times}
 \usage{
 filter_RT(chemtable, min, max)
 }
 \arguments{
-\item{chemtable}{the data frame of the data about the compounds
-min the minimum retention time Defaults to xxx
-max the maximum retention time Defaults to xxx}
+\item{chemtable}{the data frame of the data about the compounds}
+
+\item{min}{the minimum retention time}
+
+\item{max}{the maximum retention time}
 }
 \description{
-This function allows you to filter compounds that elute before a minimum retention time and/or after a maximum retention time.
+This function allows you to filter out compounds that elute before a minimum retention time and/or after a maximum retention time.
 }
 \examples{
-filter_RT()
+data(GCMSfloral)
+chemtable <- filter_RT(chemtable, 4, 15)
 }
 \keyword{filter}
 \keyword{retention}

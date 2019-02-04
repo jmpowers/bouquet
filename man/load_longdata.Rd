@@ -28,6 +28,6 @@ longdata, a data frame with the standard column names and types, with match scor
 Loads long-format GC-MS data and standardizes the column names and match scores
 }
 \examples{
-read.table("GCMS_output.csv", header = TRUE, sep = "\\t") \%>\%
-load_longdata("Sample", "Time", "NIST_ID", "Area", "Score")
+data(GCMSfloral)
+longdata <- load_longdata(GCMS_output, "Sample", "RT", "Name", "Area", "Match", maxmatch=100)
 }
