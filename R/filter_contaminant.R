@@ -10,6 +10,6 @@
 #' @export
 filter_contaminant<-function(chemtable,cont.list){
   return(within(chemtable, {
-    filter_contaminant <- factor(ifelse(compound %in% cont.list,"Contaminant", "OK"))
+    filter_contaminant <- factor(ifelse(name %in% cont.list,"Contaminant", "OK"))
   }))
 }
