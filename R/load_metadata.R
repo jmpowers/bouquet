@@ -17,7 +17,7 @@ load_metadata <- function(metadata, date=NULL, sample, group=NULL, type, amount=
   cols <- cols[sapply(cols, is.character)]
   found <- match(colnames(metadata), cols)
   colnames(metadata) <- ifelse(is.na(found), colnames(metadata), names(cols)[found])
-
+  metadata <- metadata[order(metadata$sample),] # make sure that metadata is in the same order as sampletable
   attr(metadata,"group") <- as.vector(group)
   return(metadata)
 }
