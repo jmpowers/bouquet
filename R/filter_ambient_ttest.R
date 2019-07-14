@@ -25,7 +25,7 @@ if(adjust != "none") {
     filter_ambient_ttest <- ifelse(count.ambient==0 & count.floral!=0, "OK",  filter_ambient_ttest)
     filter_ambient_ttest <- ifelse(count.ambient==0 & count.floral==0, "tTestZeros",  filter_ambient_ttest)
     filter_ambient_ttest <- ifelse(count.ambient!=0 & count.floral==0, "tTestFail",  filter_ambient_ttest)
-    filter_ambient_ttest <- ifelse(count.ambient!=0 & count.floral!=0 & is.nan(filter_ambient_ttest), "tTestSmallN",  filter_ambient_ttest)
+    filter_ambient_ttest <- ifelse(count.ambient!=0 & count.floral!=0 & is.na(filter_ambient_ttest) | is.nan(filter_ambient_ttest), "tTestSmallN",  filter_ambient_ttest)
     filter_ambient_ttest <- factor(filter_ambient_ttest)
   }))
 #also need an option for when p.adjust is not "none"
