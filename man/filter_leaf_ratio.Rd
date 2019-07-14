@@ -15,7 +15,7 @@ filter_leaf_ratio(chemtable, sampletable, metadata, ratio, leafgroup)
 
 \item{ratio}{the minimum ratio of mean areas from floral to ambient samples Defaults to XXX}
 
-\item{leafgroup}{the name of the column that shows how leaf samples are related to floral samples}
+\item{leafgroup}{the name of the column in the metadata that shows how leaf samples are related to floral samples}
 }
 \description{
 This function allows you to filter compounds based on whether the quantity of a compound in leaf samples vs. floral samples is significantly different by comparing the ratio of a compound in the floral samples to the leaf samples.

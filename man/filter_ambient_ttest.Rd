@@ -4,7 +4,8 @@
 \alias{filter_ambient_ttest}
 \title{Filter on significant differences from controls}
 \usage{
-filter_ambient_ttest(chemtable, sampletable, metadata, alpha, p.adjust)
+filter_ambient_ttest(chemtable, sampletable, metadata, alpha,
+  adjust = "none")
 }
 \arguments{
 \item{chemtable}{the data frame of the data about the compounds}
@@ -15,7 +16,7 @@ filter_ambient_ttest(chemtable, sampletable, metadata, alpha, p.adjust)
 
 \item{alpha}{maximum acceptable p-value Defaults to XXX}
 
-\item{p.adjust}{"fdr" for False Discovery Rate correction, "none" for no correction, or any other method of p.adjust}
+\item{adjust}{"fdr" for False Discovery Rate correction, "none" for no correction, or any other method of p.adjust}
 }
 \description{
 This function allows you to filter compounds based on whether the quantity of a compound in ambient samples vs. floral samples is significantly different.

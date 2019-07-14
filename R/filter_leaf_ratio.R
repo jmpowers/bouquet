@@ -5,7 +5,7 @@
 #' @param sampletable the wide data frame with samples in rows and compound names in columns, containing peak areas
 #' @param metadata the data frame that contains meta data about the group, type, and other attributes of each sample
 #' @param ratio the minimum ratio of mean areas from floral to ambient samples Defaults to XXX
-#' @param leafgroup the name of the column that shows how leaf samples are related to floral samples
+#' @param leafgroup the name of the column in the metadata that shows how leaf samples are related to floral samples
 #' @keywords leaf floral filter
 #' @export
 #' @examples
@@ -19,15 +19,39 @@ filter_leaf_ratio<-function(chemtable,sampletable,metadata,ratio,leafgroup){
   nvol<-length(sampletable)
   #nvol should be the number of columns in the sample table
 
-  for (i in unique(leafgroup)){
-  avgd <- sapply(1:nvol,function(x) (mean(sampletable[which(metadata$type=="floral"),x])> ratio*mean(sampletable[which(metadata$type=="leaf"),x])))
-  ##I don't know if this will work or if we will need to combine the sampletable and the metadata into the same dataframe for the purposes of this portion of the function
-  }
 
-  #for each leaf group (population), we want to know if the amount in the floral samples from that group are more than the leaf samples.
-  #then we need to store that information about each compound in each group and then reference that when making our boolean for the whole chemtable below...except maybe this filtering information can't go in the chemtable, because a given compound could have a number of different values depending on the number of populations and the variability across them
-  return(within(chemtable, {
-    filter_leaf_ratio <- factor(ifelse(avgd==TRUE,"OK", "LeafRatioFail"))
-  }))
+  if(!is.null(leafgroup)) {
+
+    leaf_ratio <- data.frame(matrix(rep(0, nlevels(metadata[,leafgroup]) * nrow(chemtable)), ncol = nlevels(metadata[,leafgroup]), nrow = nrow(chemtable)))
+    colnames(leaf_ratio) <- levels(metadata[,leafgroup])
+    rownames(leaf_ratio) <- chemtable$name
+    for (i in unique(metadata[,leafgroup])){
+      if(length(which(metadata$type=="floral" & metadata[,leafgroup]==i)) == 0 |
+         length(which(metadata$type=="leaf" & metadata[,leafgroup]==i)) == 0) {
+        leaf_ratio[,i] <- NA
+        print(paste("bad!!!",i))
+      } else {
+        leaf_ratio[,i] <- sapply(1:nvol, function(x) {
+          SampMean <- mean(sampletable[which(metadata$type=="floral" & metadata[,leafgroup]==i),x]);
+          LeafMean <- mean(sampletable[which(metadata$type=="leaf"  & metadata[,leafgroup]==i),x]);
+          return(ifelse(SampMean==0, 0, ifelse(LeafMean==0, Inf, SampMean/LeafMean)))  })
+      }
+    }
+    leaffilter <- leaf_ratio > ratio
+    return(leaffilter)
+
+  } else {
+    leaf_ratio <- sapply(1:nvol, function(x) {
+      SampMean <- mean(sampletable[which(metadata$type=="floral"),x]);
+      LeafMean <- mean(sampletable[which(metadata$type=="leaf"),x]);
+      return(ifelse(SampMean==0, 0, ifelse(LeafMean==0, Inf, SampMean/LeafMean)))  })
+
+    return(within(chemtable, {
+      filter_leaf_ratio <- factor(ifelse(leaf_ratio==TRUE,"OK", "LeafRatioFail"))
+    }))
+  }
+  ##I don't know if this will work or if we will need to combine the sampletable and the metadata into the same dataframe for the purposes of this portion of the function
+
+#for each leaf group (population), we want to know if the amount in the floral samples from that group are more than the leaf samples.
 
 }

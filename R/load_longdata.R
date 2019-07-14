@@ -20,6 +20,8 @@ load_longdata <- function(data, sample, RT, name, area, match, maxmatch = 100) {
   colnames(data) <- ifelse(is.na(found), colnames(data), names(cols)[found])
 
   data$match <- data$match/maxmatch
+  data$name <- as.factor(data$name)
+  data$sample <- as.factor(data$sample)
 
   return(data)
 }
