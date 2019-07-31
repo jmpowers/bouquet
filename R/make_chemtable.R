@@ -35,7 +35,7 @@ make_chemtable <- function(longdata, metadata) {
   })
 
   add_counts_freqs <- function(chemtable, sampletable, groups) {
-    for(g in levels(groups)) {
+    for(g in levels(groups)[levels(groups)!=""]) { #"" are probably the ambients and blanks
       chemtable[,paste0("count.",g)] <- sapply(na.omit(sampletable[groups==g,]), function(x) sum(x>0))
       chemtable[,paste0("freq.",g)] <- sapply(na.omit(sampletable[groups==g,]), function(x) sum(x>0) /  length(x))
     }
