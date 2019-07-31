@@ -12,7 +12,6 @@
 filter_RT<-function(chemtable, min, max){
   attr(chemtable, "RT_min") <- min
   attr(chemtable, "RT_max") <- max
-  within(chemtable,
-         filter_RT <- factor(ifelse(RT <= max & RT >= min , "OK", ifelse(RT >= max, "High", "Low"))))
-  return(chemtable)
+  return(within(chemtable,
+         filter_RT <- factor(ifelse(RT <= max & RT >= min , "OK", ifelse(RT >= max, "High", "Low")))))
 }
