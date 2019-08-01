@@ -9,6 +9,6 @@
 #' data(GCMSfloral)
 #' standardize_finaltable(finaltable, metadata, percent = FALSE)
 #' @export
-standardize_finaltable <- function(filetable, metadata, percent = FALSE) {
+standardize_finaltable <- function(finaltable, metadata, percent = FALSE) {
   return(finaltable / ifelse(percent, rowSums(finaltable), metadata[metadata$type == "floral","amount"])[row(finaltable)])
 }
