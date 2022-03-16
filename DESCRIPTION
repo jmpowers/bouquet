@@ -14,8 +14,10 @@ Depends:
 Imports: 
     reshape2
 Suggests: 
+    vegan,
     knitr,
-    rmarkdown
+    rmarkdown,
+    magrittr
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
