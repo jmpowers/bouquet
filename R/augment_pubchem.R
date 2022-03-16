@@ -6,7 +6,10 @@
 #' @keywords
 #' @examples
 #' @export
-augment_pubchem<-function(chemtable){
+augment_pubchem<-function(chemtable, properties=NULL){
+  if(is.na(properties)) {
+    properties = c('MolecularFormula', 'MolecularWeight', 'IsomericSMILES', 'InChI','InChIKey', 'IUPACName')
+  }
   if(!require(webchem)) {
     install.packages("webchem")
   }
@@ -14,7 +17,7 @@ augment_pubchem<-function(chemtable){
   httr::set_config(httr::config(http_version = 0)) #fixes connection bug
 
   CID <- sapply(chemtable$name, webchem::get_cid, verbose=FALSE)
-  prop <- webchem::pc_prop(CID, properties = c('MolecularFormula', 'MolecularWeight', 'CanonicalSMILES'), verbose=FALSE)
+  prop <- webchem::pc_prop(CID, properties = properties, verbose=FALSE)
   chemtable <- cbind(chemtable, prop)
   return(chemtable)
 }
