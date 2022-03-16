@@ -11,7 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   comment = "  ", message=F, warning=F,
   dev="svglite", dev.args=list(fix_text_size=FALSE),
-  fig.width=7, fig.height=6
+  fig.width=7, fig.height=6, highlight=FALSE
 )
 requireNamespace("magrittr", quietly = TRUE)
 requireNamespace("vegan", quietly = TRUE)
