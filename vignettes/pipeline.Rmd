@@ -23,7 +23,7 @@ To begin, install the package from GitHub using the commented lines and load the
 
 ```{r libraries}
 # install.packages("remotes")
-# remotes::install_github("jmpowers/bouquet")
+# remotes::install_github("jmpowers/bouquet", build_vignettes = TRUE)
 library(bouquet)
 library(magrittr)
 ```
