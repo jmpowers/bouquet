@@ -23,4 +23,7 @@
 #'   \item{Time}{time of day (Day or Night)}
 #'   \item{Type}{type of sample (floral, ambient, blank)}
 #' }
-"GCMSfloral"
+"GCMS_output"
+
+#' @rdname GCMS_output
+"GCMS_metadata"

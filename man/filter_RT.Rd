@@ -4,17 +4,17 @@
 \alias{filter_RT}
 \title{Filter on retention times}
 \usage{
-filter_RT(chemtable, min, max)
+filter_RT(chemtable, RT_min, RT_max)
 }
 \arguments{
 \item{chemtable}{the data frame of the data about the compounds}
 
-\item{min}{the minimum retention time}
+\item{RT_min}{the RT_minimum retention time}
 
-\item{max}{the maximum retention time}
+\item{RT_max}{the RT_maximum retention time}
 }
 \description{
-This function allows you to filter out compounds that elute before a minimum retention time and/or after a maximum retention time.
+This function allows you to filter out compounds that elute before a RT_minimum retention time and/or after a RT_maximum retention time.
 }
 \examples{
 data(GCMSfloral)

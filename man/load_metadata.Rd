@@ -4,8 +4,7 @@
 \alias{load_metadata}
 \title{Load metadata}
 \usage{
-load_metadata(metadata, date = NULL, sample, group = NULL, type,
-  amount = NULL)
+load_metadata(metadata, date = NULL, sample, group = NULL, type, amount = NULL)
 }
 \arguments{
 \item{metadata}{data frame of sample metadata}

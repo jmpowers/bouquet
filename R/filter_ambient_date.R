@@ -6,7 +6,7 @@
 #' @param metadata the data frame that contains meta data about the group, type, and other attributes of each sample
 #' @param ratio the minimum ratio of mean areas from floral to the ambient sample on that collection date
 #' @keywords ambient floral filter
-#' @value datefilter, a dataframe of dates x compounds, containing boolean include_ambient_ratio
+#' @return datefilter, a dataframe of dates x compounds, containing boolean include_ambient_ratio
 #' @examples
 #' data(GCMSfloral)
 #' chemtable <- filter_ambient_date(chemtable, sampletable, metadata, ratio=10)

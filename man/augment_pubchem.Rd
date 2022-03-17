@@ -4,7 +4,7 @@
 \alias{augment_pubchem}
 \title{Lookup data from PubChem}
 \usage{
-augment_pubchem(chemtable)
+augment_pubchem(chemtable, properties = NULL)
 }
 \arguments{
 \item{chemtable}{the data frame of the data about the compounds}
@@ -14,3 +14,4 @@ augment_pubchem(chemtable)
 \description{
 Lookup data from PubChem
 }
+\keyword{chemometrics}

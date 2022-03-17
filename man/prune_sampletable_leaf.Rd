@@ -5,8 +5,7 @@
 \title{Prune sampletable by leaf
 Zeros out cells in the sample table that did not pass the ambient leaf filter.}
 \usage{
-prune_sampletable_leaf(sampletable, chemtable, metadata, leafgroup,
-  leaffilter)
+prune_sampletable_leaf(sampletable, chemtable, metadata, leafgroup, leaffilter)
 }
 \arguments{
 \item{chemtable}{the data frame of the data about the compounds}

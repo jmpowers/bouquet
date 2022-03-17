@@ -4,14 +4,14 @@
 \alias{standardize_finaltable}
 \title{Standardize finaltable by amount or row total}
 \usage{
-standardize_finaltable(filetable, metadata, percent = FALSE)
+standardize_finaltable(finaltable, metadata, percent = FALSE)
 }
 \arguments{
+\item{finaltable}{the wide data frame with samples in rows and compound names in columns, containing peak areas for floral samples only}
+
 \item{metadata}{the data frame that contains meta data about the group, type, and other attributes of each sample}
 
 \item{percent}{if TRUE, divide by row sums instead of amount}
-
-\item{finaltable}{the wide data frame with samples in rows and compound names in columns, containing peak areas for floral samples only}
 }
 \value{
 finaltable

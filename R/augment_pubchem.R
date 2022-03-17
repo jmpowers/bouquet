@@ -3,8 +3,7 @@
 #'
 #' @param chemtable the data frame of the data about the compounds
 #' @param CAS Optional, a vector of CAS numbers
-#' @keywords
-#' @examples
+#' @keywords chemometrics
 #' @export
 augment_pubchem<-function(chemtable, properties=NULL){
   if(is.na(properties)) {

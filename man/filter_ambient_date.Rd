@@ -15,6 +15,9 @@ filter_ambient_date(chemtable, sampletable, metadata, ratio = 3)
 
 \item{ratio}{the minimum ratio of mean areas from floral to the ambient sample on that collection date}
 }
+\value{
+datefilter, a dataframe of dates x compounds, containing boolean include_ambient_ratio
+}
 \description{
 This function allows you to filter compounds based on a threshold ratio of a compound's mean area in floral samples vs. ambient samples on a particular date.
 }
