@@ -5,16 +5,15 @@
 #' @param sampletable the wide data frame with samples in rows and compound names in columns, containing peak areas
 #' @param metadata the data frame that contains meta data about the group, type, and other attributes of each sample
 #' @param ratio the minimum ratio of mean areas from floral to the ambient sample on that collection date
+#' @param prop_dates the minimum proportion of dates a compound must pass the ratio test to pass overall
 #' @keywords ambient floral filter
-#' @return datefilter, a dataframe of dates x compounds, containing boolean include_ambient_ratio
 #' @examples
 #' data(GCMSfloral)
-#' chemtable <- filter_ambient_date(chemtable, sampletable, metadata, ratio=10)
+#' chemtable <- filter_ambient_date(chemtable, sampletable, metadata, ratio=4, prop_dates=0.2)
 #' @export
-filter_ambient_date<-function(chemtable, sampletable, metadata, ratio=3){
+filter_ambient_date<-function(chemtable, sampletable, metadata, ratio=3, prop_dates=0.5){
   attr(chemtable, "ambient_ratio") <- ratio
   nvol<-ncol(sampletable)
-  #JP: I split the result into two columns - one for the ratio and one for whether it passed
   metadata <- metadata[!is.na(metadata$date),]
   metadata$date <- factor(metadata$date)
   ambient_ratio <- data.frame(matrix(rep(0, nlevels(metadata$date) * nrow(chemtable)), ncol = nlevels(metadata$date), nrow = nrow(chemtable)))
@@ -24,7 +23,7 @@ filter_ambient_date<-function(chemtable, sampletable, metadata, ratio=3){
       if(length(which(metadata$type=="floral" & metadata$date==i)) == 0 |
          length(which(metadata$type=="ambient" & metadata$date==i)) == 0) {
         ambient_ratio[,i] <- NA
-        print(paste("bad!!!",i))
+        message(paste("No controls or no samples to compare on",i))
       } else {
       ambient_ratio[,i] <- sapply(1:nvol, function(x) {
         SampMean <- mean(sampletable[which(metadata$type=="floral" & metadata$date==i),x]);
@@ -32,6 +31,10 @@ filter_ambient_date<-function(chemtable, sampletable, metadata, ratio=3){
         return(ifelse(SampMean==0, 0, ifelse(AmbiMean==0, Inf, SampMean/AmbiMean)))  })
     }
     }
-    datefilter <- ambient_ratio > ratio
-    return(datefilter)
+    datefilter <- ambient_ratio > ratio #boolean matrix of whether the compound passed on each date
+
+    return(within(chemtable, {
+      prop_dates_passed <- rowSums(datefilter, na.rm=T) / rowSums(!is.na(datefilter))
+      filter_ambient_date <- ifelse(prop_dates_passed >= prop_dates, "OK", "dateFail")
+    }))
 }
