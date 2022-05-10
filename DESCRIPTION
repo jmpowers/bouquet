@@ -17,7 +17,8 @@ Suggests:
     vegan,
     knitr,
     rmarkdown,
-    magrittr
+    magrittr,
+    ggplot2
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

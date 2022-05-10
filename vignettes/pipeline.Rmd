@@ -45,7 +45,7 @@ longdata <- load_longdata(GCMS_output, sample = "Sample", RT = "RT",
                           name = "Name", area = "Area", 
                           match = "Match", maxmatch=100)
 
-sampletable <- make_sampletable(longdata)
+sampletable <- make_sampletable(longdata, metadata)
 
 dim(sampletable)
 ```
@@ -60,11 +60,26 @@ chemtable <-
   filter_freq(0.2, group = TRUE) %>% 
   filter_contaminant(cont.list = "Caprolactam") %>% 
   filter_area(min_maximum = 20000) %>%
+  filter_ambient_ratio(sampletable, metadata, ratio = 4) %>% 
   filter_ambient_ttest(sampletable, metadata, 
                        alpha = 0.05, adjust = "fdr") %>%
   combine_filters()
-    
+
+with(chemtable, hist(filters_passed, main = "Number of filters passed"))
+chemtable <- within(chemtable,
+                    filter_final <- (filter_ambient_ratio == "OK" | filter_ambient_ttest == "OK") &
+                      filters_passed >= 10)
 str(chemtable, vec.len=1)
+```
+
+```{r saveout, eval = FALSE, include = FALSE}
+#save.image(file = "./data/GCMSfloral.rda")
+```
+
+Visualize the filtering criteria using `plot_filters()` that creates a plot of compound occurence and peak areas, including text showing how areas compare in samples versus controls.
+
+```{r plot_filters, fig.width=12, fig.height=8}
+plot_filters(chemtable, fontsize=2.5)
 ```
 
 To cut out the compounds that did not meet filter_final, use `prune_sampletable()`.
@@ -87,7 +102,7 @@ library(vegan)
 plot(cap, type = "n", 
      main = paste("CAP of", ncol(finaltable), "volatiles in", 
                   nrow(finaltable), "samples vs. cross type"))
-legend("topright", levels(finalmetadata$Cross), 
+legend("bottomright", levels(finalmetadata$Cross), 
        col = 2:5, pch = 19, title = "Cross")
 points(cap, col = as.integer(finalmetadata$Cross)+1, pch = 19)
 text(cap, display = "species", col="grey50")
@@ -96,7 +111,7 @@ text(cap, display = "cn", labels=levels(finalmetadata$Cross))
 
 heatmap(as.matrix(finaltable)^(1/4), 
         scale = "none", distfun = vegdist,
-        cexCol = 1, margins = c(12, 0), labRow = NA,
+        cexCol = 1, margins = c(15, 0), labRow = NA,
         col=colorRampPalette(c("white","darkblue"))(256),
         RowSideColors = as.character(as.integer(finalmetadata$Cross)+1))
 legend("bottomleft", levels(finalmetadata$Cross), title = "Cross",
