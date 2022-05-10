@@ -25,8 +25,8 @@ Generates chemtable, a data frame of the compounds, with the following columns:
 \item{RT.var}{variance of RT}
 \item{match}{mean match}
 \item{match.var}{variance of match}
-\item{max.area}{maximum area in floral samples}
-\item{mean.area}{mean area in floral samples, including zeros}
+\item{max.floral}{maximum area in floral samples}
+\item{mean.floral}{mean area in floral samples, including zeros}
 \item{count.X}{multiple columns, number of occurrences within types and treatment groups}
 \item{freq.X}{multiple columns, proportion of occurrences within types and treatment groups}
 }

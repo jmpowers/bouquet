@@ -4,10 +4,12 @@
 \alias{make_sampletable}
 \title{Make sample table}
 \usage{
-make_sampletable(longdata)
+make_sampletable(longdata, metadata)
 }
 \arguments{
 \item{longdata}{the long format data frame}
+
+\item{metadata}{the sample metadata, rows will match order of metadata$sample}
 }
 \value{
 sampletable, a wide data frame with samples in rows and compound names in columns, containing peak areas
@@ -17,5 +19,5 @@ Converts long-format GC-MS data to a wide data frame with samples in rows and co
 }
 \examples{
 data(GCMSfloral)
-sampletable <- make_sampletable(longdata)
+sampletable <- make_sampletable(longdata, metadata)
 }

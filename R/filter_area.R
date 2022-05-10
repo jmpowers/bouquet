@@ -11,6 +11,6 @@
 filter_area<-function(chemtable, min_maximum){
   attr(chemtable, "area_min_maximum") <- min_maximum
   return(within(chemtable, {
-    filter_area <- factor(ifelse(max > min_maximum, "OK", "Low"))
+    filter_area <- factor(ifelse(max.floral > min_maximum, "OK", "Low"))
   }))
 }

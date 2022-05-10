@@ -9,8 +9,8 @@
 #' \item{RT.var}{variance of RT}
 #' \item{match}{mean match}
 #' \item{match.var}{variance of match}
-#' \item{max.area}{maximum area in floral samples}
-#' \item{mean.area}{mean area in floral samples, including zeros}
+#' \item{max.floral}{maximum area in floral samples}
+#' \item{mean.floral}{mean area in floral samples, including zeros}
 #' \item{count.X}{multiple columns, number of occurrences within types and treatment groups}
 #' \item{freq.X}{multiple columns, proportion of occurrences within types and treatment groups}
 #' }
@@ -23,15 +23,16 @@
 #' @export
 make_chemtable <- function(longdata, metadata) {
 
-  sampletable <- bouquet::make_sampletable(longdata)
+  sampletable <- bouquet::make_sampletable(longdata, metadata)
   chemtable <- data.frame(name=levels(longdata$name))
   chemtable <- within(chemtable, {
     RT <-     sapply(name, function(x) {median(longdata$RT[longdata$name==x])})
     RT.var <- sapply(name, function(x) {var(longdata$RT[longdata$name==x])})
     match <-  sapply(name, function(x) {median(longdata$match[longdata$name==x])})
     match.var <- sapply(name, function(x) {var(longdata$match[longdata$name==x])})
-    max <-    sapply(sampletable[metadata$type=="floral",], max)
-    mean <-   sapply(sampletable[metadata$type=="floral",], mean)
+    max.floral <-    sapply(sampletable[metadata$type=="floral",], max)
+    mean.floral <-   sapply(sampletable[metadata$type=="floral",], mean)
+    mean.nonzero.floral <- sapply(sampletable[metadata$type=="floral",], function(x){mean(x[x>0])})
   })
 
   add_counts_freqs <- function(chemtable, sampletable, groups) {
