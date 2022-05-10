@@ -4,7 +4,13 @@
 \alias{filter_ambient_date}
 \title{Filter on ratios between samples and controls by date}
 \usage{
-filter_ambient_date(chemtable, sampletable, metadata, ratio = 3)
+filter_ambient_date(
+  chemtable,
+  sampletable,
+  metadata,
+  ratio = 3,
+  prop_dates = 0.5
+)
 }
 \arguments{
 \item{chemtable}{the data frame of the data about the compounds}
@@ -14,16 +20,15 @@ filter_ambient_date(chemtable, sampletable, metadata, ratio = 3)
 \item{metadata}{the data frame that contains meta data about the group, type, and other attributes of each sample}
 
 \item{ratio}{the minimum ratio of mean areas from floral to the ambient sample on that collection date}
-}
-\value{
-datefilter, a dataframe of dates x compounds, containing boolean include_ambient_ratio
+
+\item{prop_dates}{the minimum proportion of dates a compound must pass the ratio test to pass overall}
 }
 \description{
 This function allows you to filter compounds based on a threshold ratio of a compound's mean area in floral samples vs. ambient samples on a particular date.
 }
 \examples{
 data(GCMSfloral)
-chemtable <- filter_ambient_date(chemtable, sampletable, metadata, ratio=10)
+chemtable <- filter_ambient_date(chemtable, sampletable, metadata, ratio=4, prop_dates=0.2)
 }
 \keyword{ambient}
 \keyword{filter}
