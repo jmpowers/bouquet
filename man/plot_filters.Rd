@@ -4,31 +4,43 @@
 \alias{plot_filters}
 \title{Diagnostic plot of compound filtering}
 \usage{
-plot_filters(chemtable, yrange = 3, fontsize = 3, pointsize = 15)
+plot_filters(
+  chemtable,
+  option = "rarity",
+  yrange = 3,
+  fontsize = 3,
+  pointsize = 10
+)
 }
 \arguments{
 \item{chemtable}{the data frame of the data about the compounds}
 
-\item{yrange}{the number of order of magnitudes the log10 y-axis will span}
+\item{yrange}{the number of order of magnitudes the log10 y-axis will span, NA shows all compounds}
 
 \item{fontsize}{size of the compound labels}
 
 \item{pointsize}{size of the largest point}
+
+\item{method}{the type of plot to produce, "rarity" or "ambient", see Details}
 }
 \description{
-This function creates a plot that visualizes compound rarity (x-axis),
-maximum peak area across samples (y-axis), mean nonzero area peak area (size),
-amounts relative to ambient controls (labels), and whether the compound met
-the final filtering critera (filter_final column), or the area and frquency filters.
-Requires filter_area and gilter_freq to be run first.
+This function creates several plots that visualizes compounds and filtering criteria. Requires filter_area and filter_freq to be run first, and optionally filter_ambient_ratio. It requires ggplot2.
+}
+\details{
+The following plotting options are available. The color of points is set based on whether the compound met
+the final filtering criteria (filter_final column), or the area and frequency filters.
+\describe{
+  \item{rarity}{Plots compound rarity (x-axis),
+maximum peak area across samples (y-axis), mean nonzero area peak area (size), and
+amounts relative to ambient controls (labels, if filter_ambient_ratio is run first)}
+  \item{ambient}{Plots mean peak area in ambient controls (x-axis) versus in floral samples (y-axis),
+  frequency in floral samples (size), and shows the cutoff used for filter_ambient_ratio (dotted line)}
+}
 }
 \examples{
 data(GCMSfloral)
-chemtable <- make_chemtable(longdata, metadata)
-chemtable <- filter_area(chemtable, min_maximum = 20000)
-chemtable <- filter_freq(chemtable, 0.2)
-chemtable <- combine_filters(chemtable)
-plot_filters(chemtable)
+plot_filters(chemtable, option="rarity")
+plot_filters(chemtable, option="ambient")
 }
 \keyword{filter}
 \keyword{plot}

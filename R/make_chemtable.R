@@ -31,8 +31,11 @@ make_chemtable <- function(longdata, metadata) {
     match <-  sapply(name, function(x) {median(longdata$match[longdata$name==x])})
     match.var <- sapply(name, function(x) {var(longdata$match[longdata$name==x])})
     max.floral <-    sapply(sampletable[metadata$type=="floral",], max)
+    max.ambient <-   sapply(sampletable[metadata$type=="ambient",],max)
     mean.floral <-   sapply(sampletable[metadata$type=="floral",], mean)
-    mean.nonzero.floral <- sapply(sampletable[metadata$type=="floral",], function(x){mean(x[x>0])})
+    mean.ambient <-  sapply(sampletable[metadata$type=="ambient",],mean)
+    mean.nonzero.floral <- sapply(sampletable[metadata$type=="floral",],  function(x){mean(x[x>0])})
+    mean.nonzero.ambient <-sapply(sampletable[metadata$type=="ambient",], function(x){mean(x[x>0])})
   })
 
   add_counts_freqs <- function(chemtable, sampletable, groups) {

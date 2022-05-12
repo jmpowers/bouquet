@@ -16,6 +16,8 @@ requireNamespace("magrittr", quietly = TRUE)
 requireNamespace("vegan", quietly = TRUE)
 ```
 
+# Getting started
+
 The open-source R package `bouquet` facilitates easy and transparent preprocessing and GC-MS datasets. The package flexibly accepts integrated and identified peaks from a set of chromatograms and performs customizable filtering steps. Using internal or external standards, emission rates can be quantified and standardized by a measure of biomass. Visualizations of statistics for each compound help determine filtering thresholds. Finally, the filtered dataset can be augmented with information from freely online chemical databases.
 
 To begin, install the package from GitHub using the commented lines and load the magrittr package for the pipe operator. After loading bouquet, help for each function is available by typing `?function_name`. Bugs or feature requests can be submitted on [GitHub](https://github.com/jmpowers/bouquet/issues).
@@ -26,6 +28,8 @@ To begin, install the package from GitHub using the commented lines and load the
 library(bouquet)
 library(magrittr)
 ```
+
+# Data format
 
 The example dataset `GCMSfloral` is provided with the package and it contains 128 floral samples and 16 ambient controls. The floral samples were taken from four types of hybrid crosses at two times of day. The information about each sample and control is given in the `GCMSmetadata` table for this example, but would normally be imported from a spreadsheet. `load_metadata()` identifies the important columns that will be used later, and standardizes their names. The `group` argument indicates the column(s) with experimental groups, and the type column specifies whether the row represents a floral sample or an ambient or vegetative control.
 
@@ -50,6 +54,8 @@ sampletable <- make_sampletable(longdata, metadata)
 dim(sampletable)
 ```
 
+# Filtering
+
 `make_chemtable()` calculates descriptive statistics for each compound, including the mean and maximum peak area across samples, the mean and variance of the match score and retention time, and the count and frequency of occurrence in controls, samples, and each experimental group. Eleven `filter_*()` functions have been implemented that append a column with the verdict for each compound; view the complete listing with `help(package = "bouquet")`. The example here uses filters for retention time, match score, minimum frequency in each experimental group, a manual contaminant list, and maximum peak area across all samples. The last filter performs t-tests of the compound peak areas observed in samples vs. ambient controls and corrects for multiple comparisons using the false discovery rate method. Alternatively, `filter_ambient_presence()` excludes any compounds found in controls, and `filter_ambient_ratio()` and `filter_leaf_ratio()` require the mean area across samples to exceed the mean area in ambient or vegetative controls by a specified ratio. To compare samples to controls taken on the same date, use `filter_ambient_date()`. To tally the number of filters that each compound passes, use `combine_filters()`, and then leave the filter_final column as the default (compound must meet all specified filters), or customize it with your own logical combination of the filter columns. For example, setting `chemtable$filter_final <- chemtable$filters_passed >= 5 & chemtable$filter_RT=="Ok"` would require the retention time filter to be met and at least five of the applied filters.
 
 ```{r chemtable}
@@ -59,7 +65,7 @@ chemtable <-
   filter_match(0.8) %>% 
   filter_freq(0.2, group = TRUE) %>% 
   filter_contaminant(cont.list = "Caprolactam") %>% 
-  filter_area(min_maximum = 20000) %>%
+  filter_area(min_maximum = 5e5) %>%
   filter_ambient_ratio(sampletable, metadata, ratio = 4) %>% 
   filter_ambient_ttest(sampletable, metadata, 
                        alpha = 0.05, adjust = "fdr") %>%
@@ -76,11 +82,23 @@ str(chemtable, vec.len=1)
 #save.image(file = "./data/GCMSfloral.rda")
 ```
 
-Visualize the filtering criteria using `plot_filters()` that creates a plot of compound occurence and peak areas, including text showing how areas compare in samples versus controls.
+# Visualizing filters
+
+Visualize the filtering criteria using `plot_filters()`. 
+
+The "rarity" option creates a plot of compound occurrence and peak areas, including text showing how areas compare in samples versus controls. The dashed lines show the applied frequency and area filters.
 
 ```{r plot_filters, fig.width=12, fig.height=8}
-plot_filters(chemtable, fontsize=2.5)
+plot_filters(chemtable, option="rarity", yrange=2.5, fontsize=2.5, pointsize=15)
 ```
+
+The "ambient" option creates a plot comparing mean peak areas in floral samples vs. ambient controls. The dashed line shows the applied ambient ratio filter.
+
+```{r plot_ambient, fig.width=12, fig.height=8}
+plot_filters(chemtable, option="ambient", yrange=4, pointsize=6)
+```
+
+# Finish and analyze
 
 To cut out the compounds that did not meet filter_final, use `prune_sampletable()`.
 
