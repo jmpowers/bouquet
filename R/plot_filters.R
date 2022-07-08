@@ -36,13 +36,18 @@ plot_filters <- function(chemtable, option="rarity", yrange = 3, fontsize = 3, p
     stop("Run combine_filters(chemtable) first to create \'filter_final\' column")
   }
 
-  if(all(c("filter_area","filter_freq.floral") %in% names(chemtable))) {
+  if(option == "rarity" & all(c("filter_area","filter_freq.floral") %in% names(chemtable))) {
     area_min_maximum <- attr(chemtable, "area_min_maximum")
     freq_min <- attr(chemtable, "freq_min")
     chemtable <- within(chemtable,
                         filter_status <- ifelse(filter_final, "Included in final table",
                                                 ifelse(filter_area == "OK" & filter_freq.floral == "OK",
                                                        "Excluded - pass area & freq. filters", "Excluded")))
+  } else if(option == "ambient" & "filter_ambient_ttest" %in% names(chemtable)) {
+    chemtable <- within(chemtable,
+                        filter_status <- ifelse(filter_final, "Included in final table",
+                                                ifelse(filter_ambient_ttest == "OK",
+                                                       "Excluded - pass t-test", "Excluded")))
   } else {
     area_min_maximum <- NA
     freq_min <- NA
@@ -58,8 +63,9 @@ plot_filters <- function(chemtable, option="rarity", yrange = 3, fontsize = 3, p
   library(ggplot2)
 
   filter_status_pal <-c("Excluded"="red",
-                        "Excluded - pass area & freq. filters"="orange",
+                        "Exclude - pass"="orange",
                         "Included in final table"="forestgreen")
+  names(filter_status_pal)[2] <- c(rarity="Excluded - pass area & freq. filters", ambient="Excluded - pass t-test")[option]
   diag_title <- paste0("Filtering diagnostics: ",
                       sum(chemtable$filter_final),"/",nrow(chemtable)," compounds included")
 
@@ -99,6 +105,6 @@ plot_filters <- function(chemtable, option="rarity", yrange = 3, fontsize = 3, p
       theme_minimal()
 
   } else {
-    stop("Enter a valid plotting  option")
+    stop("Enter a valid plotting option")
   }
 }
