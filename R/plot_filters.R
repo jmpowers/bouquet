@@ -14,6 +14,7 @@
 #' amounts relative to ambient controls (labels, if filter_ambient_ratio is run first)}
 #'   \item{ambient}{Plots mean peak area in ambient controls (x-axis) versus in floral samples (y-axis),
 #'   frequency in floral samples (size), and shows the cutoff used for filter_ambient_ratio (dotted line)}
+#'   \item{prop}{Plots the proportion of chemicals that passed each test}
 #' }
 #'
 #' @keywords plot filter
@@ -48,12 +49,17 @@ plot_filters <- function(chemtable, option="rarity", yrange = 3, fontsize = 3, p
                         filter_status <- ifelse(filter_final, "Included in final table",
                                                 ifelse(filter_ambient_ttest == "OK",
                                                        "Excluded - pass t-test", "Excluded")))
+  } else if(option == "prop") {
+
   } else {
     area_min_maximum <- NA
     freq_min <- NA
     chemtable <- within(chemtable,
                         filter_status <- ifelse(filter_final, "Included in final table", "Excluded"))
   }
+
+  diag_title <- paste0("Filtering diagnostics: ",
+                       sum(chemtable$filter_final),"/",nrow(chemtable)," compounds included")
 
   chemtable <- subset(chemtable, !is.na(mean.nonzero.floral))
 
@@ -66,8 +72,6 @@ plot_filters <- function(chemtable, option="rarity", yrange = 3, fontsize = 3, p
                         "Exclude - pass"="orange",
                         "Included in final table"="forestgreen")
   names(filter_status_pal)[2] <- c(rarity="Excluded - pass area & freq. filters", ambient="Excluded - pass t-test")[option]
-  diag_title <- paste0("Filtering diagnostics: ",
-                      sum(chemtable$filter_final),"/",nrow(chemtable)," compounds included")
 
   if(option == "rarity") {
     ggplot(chemtable, aes(x=freq.floral, y=max.floral)) +
@@ -103,7 +107,16 @@ plot_filters <- function(chemtable, option="rarity", yrange = 3, fontsize = 3, p
            x="Mean peak area in ambient controls", y="Mean peak area in floral samples",
            title=diag_title, linetype="Ambient ratio") +
       theme_minimal()
-
+  } else if(option == "prop") {
+    chemtable[,grepl("name|filter_", colnames(chemtable))] %>%
+      transform(filter_final = ifelse(filter_final, "OK", "Excluded")) %>%
+      lapply(as.character) %>% as.data.frame() %>%
+      reshape2::melt(id.vars="name") %>%
+      transform(value = relevel(factor(value), "OK")) %>%
+      ggplot(aes(y=variable, fill=value)) + geom_bar(position="fill") +
+      scale_x_continuous(labels=scales::percent)+ labs(x="", y="", fill="") +
+      theme_minimal() + scale_fill_brewer(type="qual") +
+      theme(axis.text.y=element_text(hjust=0))
   } else {
     stop("Enter a valid plotting option")
   }

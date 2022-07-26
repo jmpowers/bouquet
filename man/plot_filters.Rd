@@ -35,6 +35,7 @@ maximum peak area across samples (y-axis), mean nonzero area peak area (size), a
 amounts relative to ambient controls (labels, if filter_ambient_ratio is run first)}
   \item{ambient}{Plots mean peak area in ambient controls (x-axis) versus in floral samples (y-axis),
   frequency in floral samples (size), and shows the cutoff used for filter_ambient_ratio (dotted line)}
+  \item{prop}{Plots the proportion of chemicals that passed each test}
 }
 }
 \examples{
