@@ -15,7 +15,7 @@ load_metadata(metadata, date = NULL, sample, group = NULL, type, amount = NULL)
 
 \item{group}{a vector of columns that specifies species or treatment groups}
 
-\item{type}{the factor that specifies what type of sample it is (e.g. floral, ambient control, etc.). Levels should be c("floral", "ambient", "leaf")}
+\item{type}{the column that specifies what type of sample it is (e.g. floral, ambient control, etc.). Levels should be c("floral", "ambient", "leaf")}
 
 \item{amount}{the string that specifies the amount used for standardization (e.g. flower number or mass)}
 }
