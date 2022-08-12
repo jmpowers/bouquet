@@ -25,7 +25,7 @@ load_metadata <- function(metadata, date=NULL, sample, group=NULL, type, amount=
 
   #add info about groups and make each group column a factor
   if(!is.null(group)) {
-    metadata[,group] <- lapply(metadata[,group], as.factor)
+    metadata[,group] <- lapply(metadata[,group, drop=FALSE], as.factor)
   }
   attr(metadata,"group") <- as.vector(group)
 
