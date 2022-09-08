@@ -12,8 +12,10 @@ knitr::opts_chunk$set(
   comment = "  ", message=F, warning=F,
   fig.width=7, fig.height=6, highlight=FALSE
 )
-requireNamespace("magrittr", quietly = TRUE)
 requireNamespace("vegan", quietly = TRUE)
+requireNamespace("knitr", quietly = TRUE)
+requireNamespace("rmarkdown", quietly = TRUE)
+requireNamespace("magrittr", quietly = TRUE)
 requireNamespace("ggplot2", quietly = TRUE)
 ```
 
@@ -21,10 +23,11 @@ requireNamespace("ggplot2", quietly = TRUE)
 
 The open-source R package `bouquet` facilitates easy and transparent preprocessing and GC-MS datasets. The package flexibly accepts integrated and identified peaks from a set of chromatograms and performs customizable filtering steps. Using internal or external standards, emission rates can be quantified and standardized by a measure of biomass. Visualizations of statistics for each compound help determine filtering thresholds.
 
-To begin, install the package from [GitHub](https://github.com/jmpowers/bouquet) and load the `magrittr` package to join multiple functions with the pipe `%>%`. After loading `bouquet`, help for each function, including details for each argument, can be accessed by typing `?function_name`. Bugs or feature requests can be submitted as [GitHub issues](https://github.com/jmpowers/bouquet/issues).
+To begin, install the package from [GitHub](https://github.com/jmpowers/bouquet) and load the `magrittr` package to join multiple functions with the pipe `%>%`. To build this package vignette you will need to install the packages listed below. After loading `bouquet`, help for each function, including details for each argument, can be accessed by typing `?function_name`. Bugs or feature requests can be submitted as [GitHub issues](https://github.com/jmpowers/bouquet/issues).
 
 ```{r install, eval=FALSE}
-install.packages("remotes")
+install.packages(c("vegan", "knitr", "rmarkdown", "magrittr", "ggplot2")) #needed to build this vignette
+install.packages("remotes") #for installing from github
 remotes::install_github("jmpowers/bouquet", build_vignettes = TRUE)
 ```
 
@@ -61,7 +64,7 @@ longdata <- load_longdata(GCMS_output, sample = "Sample", RT = "RT",
 longdata[1:4,]
 ```
 
-`make_sampletable()` reshapes the data into a table of peak areas organized with samples in rows and compounds in columns. Only a subset of the `r ncol(sampletable)` columns are shown here.
+`make_sampletable()` reshapes the data into a table of peak areas organized with samples in rows and compounds in columns. Only a subset of the `r ncol(sampletable)` columns are shown here. 
 
 ```{r make_sampletable}
 sampletable <- make_sampletable(longdata, metadata)
@@ -71,11 +74,13 @@ sampletable[c(56,75,84,104,1,17),c("oct-1-en-3-ol", "(Z)-hex-3-en-1-ol", "Caprol
 
 # Filtering
 
-`make_chemtable()` calculates descriptive statistics for each compound  including:
+`make_chemtable()` calculates descriptive statistics for each compound including:
 
-* the mean and maximum (max) peak area in floral samples and ambient controls (the "nonzero" columns exclude zeros from the mean)
+* the mean, median, and maximum (max) peak area in floral samples and ambient controls (the "nonzero" columns exclude zeros from the mean)
 * the mean and variance (var) of the match score (match) and retention time (RT)
 * the count and frequency (freq) of occurrence in ambient controls, floral samples, and each experimental group specified in [Data format] (in this case the cross abbreviations KAAL, HOOK, KAHO, HOKA)
+
+If the original longdata is not available, `make_chemtable()` can also accept a wide-format sampletable: `make_chemtable(sampletable, metadata, datatype="wide")`.
 
 ```{r chemtable}
 chemtable <- make_chemtable(longdata, metadata)
@@ -88,7 +93,7 @@ Eleven `filter_*()` functions have been implemented that append a column with th
  * `filter_RT()`: retention time between 4 and 15 minutes
  * `filter_match()`: match score above 80%
  * `filter_freq()`: minimum frequency of 10% across all floral samples and within each experimental group (generates one filter for each group)
- * `filter_contaminant()`: a manual contaminant list
+ * `filter_contaminant()`: a manual contaminant list, which here includes any compound with "siloxane" in the name (could load any vector of names)
  * `filter_area()`: maximum peak area across all samples. 
 
 The last filter, `filter_ambient_ttest()`, performs t-tests of the compound peak areas observed in samples vs. ambient controls and corrects for multiple comparisons using the false discovery rate method. Alternatively, `filter_ambient_presence()` excludes any compounds found in controls, and `filter_ambient_ratio()` and `filter_leaf_ratio()` require the mean area across samples to exceed the mean area in ambient or vegetative controls by a specified ratio. To compare samples to controls taken on the same date, use `filter_ambient_date()`. 
@@ -98,7 +103,7 @@ chemtable <- chemtable %>%
   filter_RT(4, 15) %>% 
   filter_match(0.8) %>% 
   filter_freq(0.2, group = TRUE) %>% 
-  filter_contaminant(cont.list = "Caprolactam") %>% 
+  filter_contaminant(cont.list = c("Caprolactam", grep("siloxane", chemtable$name, value=TRUE))) %>% 
   filter_area(min_maximum = 5e5) %>%
   filter_ambient_ratio(sampletable, metadata, ratio = 4) %>% 
   filter_ambient_ttest(sampletable, metadata, 
@@ -162,19 +167,34 @@ finalmetadata <- subset(metadata, type == "floral")
 dim(finaltable)
 ```
 
-In this example, only `r ncol(finaltable)` of the `r ncol(sampletable)` original compounds remain in the final filtered table. The filtered table is now ready for analysis. As an example, with the `vegan` package you can conduct a PERMANOVA for the effect of hybrid cross, run a CAP (canonical analysis of principal coordinates) ordination, and plot a heatmap.
+In this example, only `r ncol(finaltable)` of the `r ncol(sampletable)` original compounds remain in the final filtered table. The filtered table is now ready for analysis. As an example, with the `vegan` package you can plot volatiles accumulation curves, conduct a PERMANOVA for the effect of hybrid cross, run a CAP (canonical analysis of principal coordinates) ordination, and plot a heatmap.
+
+## Accumulation curves
+
+Accumulation curves show how the number of volatiles detected increases with the number of sampled individuals within each experimental group (in this case, cross type). Means and standard errors are generated by permuting the data. If the curve does not saturate, additional sampling may be required.
+
+```{r accum}
+for(cr in 1:nlevels(finalmetadata$Cross)) {
+  Cross_subset <- finaltable[finalmetadata$Cross==levels(finalmetadata$Cross)[cr],]
+  Cross_sa <- vegan::specaccum(Cross_subset, permutations = 999) 
+  plot(Cross_sa, col = cr+1, add = cr != 1, lwd=2, xlim=c(1,max(table(finalmetadata$Cross))),
+       xlab="Samples", ylab="Compounds", main="Volatiles accumulation curve")
+}
+legend("bottomright", levels(finalmetadata$Cross), 
+       col = 2:5, pch = 19, title = "Cross")
+```
 
 ## PERMANOVA
 
 ```{r permanova}
 library(vegan)
-(permanova <- adonis2(finaltable ~ Cross, data = finalmetadata))
+(permanova <- vegan::adonis2(finaltable ~ Cross, data = finalmetadata))
 ```
 
 ## CAP
 
 ```{r cap}
-(cap <- capscale(finaltable ~ Cross, data = finalmetadata, 
+(cap <- vegan::capscale(finaltable ~ Cross, data = finalmetadata, 
                  distance = "bray"))
 plot(cap, type = "n", 
      main = paste("CAP of", ncol(finaltable), "volatiles in", 
