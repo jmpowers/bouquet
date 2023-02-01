@@ -145,7 +145,7 @@ plot_filters(chemtable, option = "prop")
 The "rarity" option creates a plot of compound occurrence (x-axis) and maximum peak area (y-axis, log scale) in floral samples. The size of the point reflects the mean peak area (excluding zeros). The ambient ratio (bottom line of each label) shows how areas compare in samples versus controls. The dashed lines show the applied frequency (vertical line) and area (horizontal line) filters. The point colors show whether the compound was included in `filter_final` (green, passed the logical combination of criteria specified above), passed the maximum area and frequency filters but not `filter_final` (orange, upper-right quadrant) or did not meet both the maximum area and frequency filters (red).
 
 ```{r plot_filters, fig.width=12, fig.height=8}
-plot_filters(chemtable, option = "rarity", yrange=2.5, fontsize=2.5, pointsize=15)
+plot_filters(chemtable, option = "rarity", yrange=2.5, fontsize=2.5, pointsize=15, alpha_excluded=0.5)
 ```
 
 ## Comparison with controls
@@ -154,6 +154,12 @@ The "ambient" option creates a plot comparing mean peak areas in floral samples 
 
 ```{r plot_ambient, fig.width=12, fig.height=8}
 plot_filters(chemtable, option = "ambient", yrange=4, pointsize=6)
+```
+
+The "volcano" option creates a plot of the statistical significance (y-axis, negative log10 adjusted P-value) of the t-test between floral samples and ambient controls, vs. the ambient ratio (x-axis, also known as fold change, log2). This plot is often used in gene expression studies to compare two treatments. The dashed vertical line shows the applied ambient ratio filter, and the dashed horizontal line shows the applied alpha threshold for p-values. The point color and size are the same as for the "ambient" option.
+
+```{r plot_volcano, fig.width=12, fig.height=8}
+plot_filters(chemtable, option = "volcano", yrange=NA, pointsize=6)
 ```
 
 # Finish and analyze

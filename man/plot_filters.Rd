@@ -15,7 +15,7 @@ plot_filters(
 \arguments{
 \item{chemtable}{the data frame of the data about the compounds}
 
-\item{yrange}{the number of order of magnitudes the log10 y-axis will span, NA shows all compounds}
+\item{yrange}{the number of orders of magnitude the log10 y-axis will span (for method "ambient") or the negative left limit of the  log2 x-axis (for method "volcano"), NA means no limit}
 
 \item{fontsize}{size of the compound labels}
 
@@ -28,13 +28,15 @@ This function creates several plots that visualizes compounds and filtering crit
 }
 \details{
 The following plotting options are available. The color of points is set based on whether the compound met
-the final filtering criteria (filter_final column), or the area and frequency filters.
+the final filtering criteria (filter_final column), or the t-test or area and frequency filters. See the pipeline vignette for details.
 \describe{
   \item{rarity}{Plots compound rarity (x-axis),
 maximum peak area across samples (y-axis), mean nonzero area peak area (size), and
 amounts relative to ambient controls (labels, if filter_ambient_ratio is run first)}
   \item{ambient}{Plots mean peak area in ambient controls (x-axis) versus in floral samples (y-axis),
   frequency in floral samples (size), and shows the cutoff used for filter_ambient_ratio (dotted line)}
+  \item{volcano}{Plots fold change (x-axis) and (adjusted) p-value (y-axis) comparing floral to ambient samples,
+  frequency in floral samples (size), and shows the cutoff used for filter_ambient_ratio and alpha (dotted lines)}
   \item{prop}{Plots the proportion of chemicals that passed each test}
 }
 }

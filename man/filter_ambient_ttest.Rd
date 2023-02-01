@@ -20,14 +20,14 @@ filter_ambient_ttest(
 
 \item{metadata}{the data frame that contains meta data about the group, type, and other attributes of each sample}
 
-\item{alpha}{maximum acceptable p-value Defaults to XXX}
+\item{alpha}{maximum acceptable p-value, defaults to 0.05}
 
 \item{adjust}{"fdr" for False Discovery Rate correction, "none" for no correction, or any other method of p.adjust}
 
 \item{compare}{the type of sample to compare against - ambient or blank}
 }
 \description{
-This function allows you to filter compounds based on whether the quantity of a compound in ambient or blank samples vs. floral samples is significantly different.
+This function allows you to filter compounds based on whether the quantity of a compound in ambient or blank samples vs. floral samples is significantly different. It creates a filter_ambient_ttest column with the following values: OK (passed t-test), tTestFail (did not pass t-test), tTestZeros (cannot run t-test, data are all zeros), tTestSmallN (nonzero data but t-test returned NA or NaN). The (adjusted) p-value is added in the ambient_pvalue column.
 }
 \examples{
 filter_ambient_ttest(chemtable,sampletable,metadata,0.05)
