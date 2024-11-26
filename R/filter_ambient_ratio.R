@@ -24,7 +24,7 @@ filter_ambient_ratio<-function(chemtable, sampletable, metadata, ratio=3, group=
         AmbiMean <- mean(sampletable[which(metadata$type=="ambient"),x]);
         return(ifelse(SampMean==0, 0, ifelse(AmbiMean==0, Inf, SampMean/AmbiMean)))  })
     }
-    chemtable$filter_ambient_ratio <- rowSums(chemtable[,paste0("ambient_ratio_", groupvals)] > ratio) > 0
+    chemtable$filter_ambient_ratio <- factor(ifelse(rowSums(chemtable[,paste0("ambient_ratio_", groupvals)] > ratio) > 0, "OK", "AmRatioFail"))
     return(chemtable)
   } else {
     #JP: I split the result into two columns - one for the ratio and one for whether it passed
