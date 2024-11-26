@@ -9,6 +9,9 @@
 #' sampletable <- make_sampletable(longdata, metadata)
 #' @export
 make_sampletable <- function(longdata, metadata) {
+  if(sum(duplicated(metadata$sample)) > 0) {
+    stop("Duplicate samples in metadata")
+  }
   sampletable <- reshape2::dcast(longdata, sample~name, sum, value.var="area")
   rownames(sampletable) <- sampletable$sample
   sampletable$sample <- NULL

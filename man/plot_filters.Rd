@@ -9,7 +9,8 @@ plot_filters(
   option = "rarity",
   yrange = 3,
   fontsize = 3,
-  pointsize = 10
+  pointsize = 10,
+  alpha_excluded = 0
 )
 }
 \arguments{
@@ -21,6 +22,8 @@ plot_filters(
 
 \item{pointsize}{size of the largest point}
 
+\item{alpha_excluded}{transparency of text for compounds that passed some test but were excluded from the final filter}
+
 \item{method}{the type of plot to produce, "rarity" or "ambient", see Details}
 }
 \description{
@@ -28,7 +31,7 @@ This function creates several plots that visualizes compounds and filtering crit
 }
 \details{
 The following plotting options are available. The color of points is set based on whether the compound met
-the final filtering criteria (filter_final column), or the t-test or area and frequency filters. See the pipeline vignette for details.
+the final filtering criteria (filter_final column), or passed some test. See the pipeline vignette for details.
 \describe{
   \item{rarity}{Plots compound rarity (x-axis),
 maximum peak area across samples (y-axis), mean nonzero area peak area (size), and

@@ -4,7 +4,13 @@
 \alias{filter_ambient_ratio}
 \title{Filter on ratios between samples and controls}
 \usage{
-filter_ambient_ratio(chemtable, sampletable, metadata, ratio = 3)
+filter_ambient_ratio(
+  chemtable,
+  sampletable,
+  metadata,
+  ratio = 3,
+  group = FALSE
+)
 }
 \arguments{
 \item{chemtable}{the data frame of the data about the compounds}
@@ -14,6 +20,8 @@ filter_ambient_ratio(chemtable, sampletable, metadata, ratio = 3)
 \item{metadata}{the data frame that contains meta data about the group, type, and other attributes of each sample}
 
 \item{ratio}{the minimum ratio of mean areas from floral to ambient samples}
+
+\item{group}{whether to compute the ratio individually for each grouping of samples. Only works for first group variable (for now).}
 }
 \description{
 This function allows you to filter compounds based on a threshold ratio of a compound's mean area in floral samples vs. ambient samples
